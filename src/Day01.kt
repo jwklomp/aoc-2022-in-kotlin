@@ -3,7 +3,11 @@ fun main() {
     fun getSums(input: List<String>): List<Int> {
         val indexes = listOf(0) + input.indexesOf("") + listOf(input.size)
         return indexes.windowed(2)
-            .map { input.subList(it.first(), it.last()).filterNot { it == "" }.map { it.toInt() }.sum() }
+            .map { input.subList(it.first(), it.last())
+                .filterNot { it == "" }
+                .map { it.toInt() }
+                .sum()
+            }
     }
 
     fun part1(input: List<String>): Int =
