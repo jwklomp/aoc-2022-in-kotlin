@@ -3,6 +3,11 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 /**
+ * Extension function to get all index positions of a given element in a collection
+ */
+fun <E> Iterable<E>.indexesOf(e: E) = mapIndexedNotNull { index, elem -> index.takeIf { elem == e } }
+
+/**
  * Reads lines from the given input txt file.
  */
 fun readInput(name: String) = File("src", "$name.txt").readLines()

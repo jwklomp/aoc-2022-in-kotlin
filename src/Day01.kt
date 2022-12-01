@@ -1,15 +1,20 @@
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+
+    fun getSums(input: List<String>): List<Int> {
+        val indexes = listOf(0) + input.indexesOf("") + listOf(input.size)
+        return indexes.windowed(2)
+            .map { input.subList(it.first(), it.last()).filterNot { it == "" }.map { it.toInt() }.sum() }
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
-    }
+    fun part1(input: List<String>): Int =
+        getSums(input).max()
 
-    // test if implementation meets criteria from the description, like:
+    fun part2(input: List<String>): Int =
+        getSums(input).sortedDescending().take(3).sum()
+
     val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    println(part1(testInput))
+    println(part2(testInput))
 
     val input = readInput("Day01")
     println(part1(input))
