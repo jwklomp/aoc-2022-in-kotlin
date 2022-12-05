@@ -27,7 +27,7 @@ fun main() {
         return stackElements.map { elementsToStack(it)}
     }
 
-    fun modifyStacks(stacks: List<Stack<String>>, move: List<String>) {
+    fun modifyStacks(stacks: CargoStack, move: List<String>) {
         val amount = move[1].toInt()
         val fromIndex = move[3].toInt() - 1
         val toIndex = move[5].toInt() - 1
