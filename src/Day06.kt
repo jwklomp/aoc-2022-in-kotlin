@@ -1,17 +1,10 @@
 fun main() {
-    fun findForWindow(input: List<String>, window: Int): Int {
-        val windowed = input.first()
-            .split("")
-            .windowed(window)
-            .filter { !it.contains("")}
+    fun findForWindow(input: String, window: Int): Int? =
+        input.windowed(window).find { it.toSet().size == it.length}?.let { input.indexOf(it) + window }
 
-        val firstUnique = windowed.find { strings ->  strings.distinct().size == window}
-        return windowed.indexOfFirst { it == firstUnique } + window
-    }
+    fun part1(input: List<String>): Int? = findForWindow(input.first(), 4)
 
-    fun part1(input: List<String>): Int = findForWindow(input, 4)
-
-    fun part2(input: List<String>): Int = findForWindow(input, 14)
+    fun part2(input: List<String>): Int? = findForWindow(input.first(), 14)
 
     val testInput = readInput("Day06_test")
     println(part1(testInput))
