@@ -9,8 +9,7 @@ fun main() {
                 val newElement = FileProp(path = acc.currentPath, name = props[1], size = props[0].toLong())
                 acc.files.add(newElement)
             } else if (it == "\$ cd ..") {
-                val lastIndex = acc.currentPath.lastIndexOf("|")
-                acc.currentPath = acc.currentPath.substring(0, lastIndex)
+                acc.currentPath = acc.currentPath.substringBeforeLast("|")
             } else if (it.contains("\$ cd") && props[2] != "/") {
                 acc.currentPath += "|${props[2]}"
                 acc.allDirs.add(acc.currentPath)
