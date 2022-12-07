@@ -2,7 +2,7 @@ data class FileProp(val path: String, val name: String, val size: Long)
 data class Acc(var currentPath: String, val allDirs: MutableList<String>, val files: MutableList<FileProp>)
 
 fun main() {
-    fun accumulatorFn(input: List<String>): Acc =
+    fun foldFn(input: List<String>): Acc =
         input.fold(Acc("root", mutableListOf("root"), mutableListOf())) { acc: Acc, it: String ->
             val props = it.split(" ")
             if (props[0].toLongOrNull() != null) {
@@ -18,7 +18,7 @@ fun main() {
         }
 
     fun getDirSizes(input: List<String>): List<Long> =
-        accumulatorFn(input).run {
+        foldFn(input).run {
             this.allDirs.toSet().map { dir ->
                 this.files.filter { file -> file.path.startsWith(dir) }.sumOf { file -> file.size }
             }
