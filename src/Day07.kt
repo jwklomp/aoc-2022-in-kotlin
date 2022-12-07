@@ -1,7 +1,7 @@
 data class FileProp(val path: String, val name: String, val size: Long)
 data class Accumulator(
     var currentPath: String,
-    val allDirs: MutableList<String>,
+    val allDirs: MutableList<String>, // needed to also keep track of dirs with 0 files and only other dirs
     val files: MutableList<FileProp>
 )
 
