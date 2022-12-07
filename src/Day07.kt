@@ -1,15 +1,9 @@
 data class FileProp(val path: String, val name: String, val size: Long)
-data class Accumulator(
-    var currentPath: String,
-    val allDirs: MutableList<String>, // needed to also keep track of dirs with 0 files and only other dirs
-    val files: MutableList<FileProp>
-)
+data class Acc(var currentPath: String, val allDirs: MutableList<String>, val files: MutableList<FileProp>)
 
 fun main() {
-    fun accumulator(input: List<String>): Accumulator {
-        val initial =
-            Accumulator(currentPath = "root", allDirs = mutableListOf("root"), files = mutableListOf())
-        val dirStructure: Accumulator = input.fold(initial) { acc: Accumulator, it: String ->
+    fun accumulator(input: List<String>): Acc =
+        input.fold(Acc("root", mutableListOf("root"), mutableListOf())) { acc: Acc, it: String ->
             val props = it.split(" ")
             if (props[0].toLongOrNull() != null) {
                 val newElement = FileProp(path = acc.currentPath, name = props[1], size = props[0].toLong())
@@ -23,18 +17,15 @@ fun main() {
             }
             return@fold acc
         }
-        return dirStructure
-    }
 
     fun determineDirSizes(input: List<String>): List<Long> {
-        val dirStructure: Accumulator = accumulator(input)
+        val dirStructure: Acc = accumulator(input)
         return dirStructure.allDirs.toSet().map { dir ->
             dirStructure.files.filter { file -> file.path.startsWith(dir) }.sumOf { file -> file.size }
         }
     }
 
-    fun part1(input: List<String>): Long =
-        determineDirSizes(input).filter { it <= 100000 }.sum()
+    fun part1(input: List<String>): Long = determineDirSizes(input).filter { it <= 100000 }.sum()
 
     fun part2(input: List<String>): Long {
         val dirSizes = determineDirSizes(input)
