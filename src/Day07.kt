@@ -18,20 +18,16 @@ fun main() {
             return@fold acc
         }
 
-    fun determineDirSizes(input: List<String>): List<Long> {
-        val dirStructure: Acc = accumulatorFn(input)
-        return dirStructure.allDirs.toSet().map { dir ->
-            dirStructure.files.filter { file -> file.path.startsWith(dir) }.sumOf { file -> file.size }
+    fun getDirSizes(input: List<String>): List<Long> =
+        accumulatorFn(input).run {
+            this.allDirs.toSet().map { dir ->
+                this.files.filter { file -> file.path.startsWith(dir) }.sumOf { file -> file.size }
+            }
         }
-    }
 
-    fun part1(input: List<String>): Long = determineDirSizes(input).filter { it <= 100000 }.sum()
+    fun part1(input: List<String>): Long = getDirSizes(input).filter { it <= 100000 }.sum()
 
-    fun part2(input: List<String>): Long {
-        val dirSizes = determineDirSizes(input)
-        val spaceToFree = dirSizes.max() - 40000000
-        return dirSizes.filter { it >= spaceToFree }.min()
-    }
+    fun part2(input: List<String>): Long = getDirSizes(input).run { this.filter { it >= this.max() - 40000000 }.min() }
 
     val testInput = readInput("Day07_test")
     println(part1(testInput))
