@@ -1,12 +1,12 @@
 fun main() {
     fun isVisible(grid: Grid2D<Int>, cell: Cell<Int>): Boolean {
         val row = grid.getRow(cell.y) // y fixed, x variable
-        val leftV = row.filter { it.x < cell.x }.all { it.value < cell.value }
-        val rightV = row.filter { it.x > cell.x }.all { it.value < cell.value }
+        val isLeftVisible = row.filter { it.x < cell.x }.all { it.value < cell.value }
+        val isRightVisible = row.filter { it.x > cell.x }.all { it.value < cell.value }
         val col = grid.getCol(cell.x) // x fixed, y variable
-        val upV = col.filter { it.y < cell.y }.all { it.value < cell.value }
-        val downV = col.filter { it.y > cell.y }.all { it.value < cell.value }
-        return leftV || rightV || upV || downV
+        val isUpVisible = col.filter { it.y < cell.y }.all { it.value < cell.value }
+        val isDownVisible = col.filter { it.y > cell.y }.all { it.value < cell.value }
+        return isLeftVisible || isRightVisible || isUpVisible || isDownVisible
     }
 
     fun getScenicScore(grid: Grid2D<Int>, cell: Cell<Int>): Int {
