@@ -15,6 +15,12 @@ class Grid2D<T>(private val grid: List<List<T>>) {
 
     fun getAdjacent(x: Int, y: Int): List<Cell<T>> = filterPositions(adjacent, x, y)
 
+    fun getRow(rowNr: Int): List<Cell<T>> = getCellsFiltered { it.y == rowNr }.sortedBy { it.x } // row: x variable, y fixed
+
+    fun getCol(colNr: Int): List<Cell<T>> = getCellsFiltered { it.x == colNr }.sortedBy { it.y } // row: y variable,x fixed
+
+    fun getNonEdges() = getCellsFiltered { it.x > 0 && it.y > 0 && it.x < rowLength && it.y < columnLength }
+
     private fun filterPositions(positions: List<Pair<Int, Int>>, x: Int, y: Int): List<Cell<T>> =
         positions
             .map { Pair(it.first + x, it.second + y) }
