@@ -33,7 +33,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int? =
-        makeGrid(input).run { this.getNonEdges().maxOfOrNull { getScenicScore(this, it) } }
+        makeGrid(input).run { this.getNonEdges().maxOf { getScenicScore(this, it) } }
 
     val testInput = readInput("Day08_test")
     println(part1(testInput))
