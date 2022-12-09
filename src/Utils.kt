@@ -17,6 +17,9 @@ fun readInput(name: String) = File("src", "$name.txt").readLines()
  */
 fun String.md5(): String = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray())).toString(16)
 
+/**
+ * Extension function that is like takeWhile, yet also takes the first element not making the test.
+ */
 fun <T> Iterable<T>.takeWhileInclusive(
     predicate: (T) -> Boolean
 ): List<T> {
