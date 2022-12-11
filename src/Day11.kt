@@ -13,7 +13,7 @@ val products = listOf(7, 19, 5, 11, 17, 13, 2, 3) // for test listOf(23, 19, 13,
 val productOfMod = products.reduce { acc, i -> acc * i }
 
 fun main() {
-    fun doThrowRound(monkeys: List<Monkey>) {
+    fun doThrowRound(monkeys: List<Monkey>) =
         monkeys.forEach { activeMonkey ->
             activeMonkey.currentItems.forEach { currentItem ->
                 var newWl = activeMonkey.operationFn(currentItem.worryLevel)
@@ -27,7 +27,6 @@ fun main() {
             }
             activeMonkey.currentItems = mutableListOf()
         }
-    }
 
     fun run(monkeys: List<Monkey>): Long =
         repeat(10000) { doThrowRound(monkeys) }
