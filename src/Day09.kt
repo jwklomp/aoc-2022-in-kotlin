@@ -4,11 +4,12 @@ data class MoveData(val knotPositions: MutableList<Pos>, var visited: MutableLis
 
 val directions = listOf("L", "R", "U", "D")
 val directionTranslations = listOf(Change(-1, 0), Change(1, 0), Change(0, 1), Change(0, -1))
-val sp = Pos(0, 0);
+val sp = Pos(0, 0)
 
 fun main() {
     fun toMove(str: String): List<String> = str.split(" ").run { List(this[1].toInt()) { this[0] } }
 
+    //  TODO rewrite to shorter using Chebyshev distance: https://iq.opengenus.org/euclidean-vs-manhattan-vs-chebyshev-distance/
     fun determineTailChangeBasedOnPosDiff(headPos: Pos, oldTailPos: Pos): Change {
         val diff = Pos(headPos.x - oldTailPos.x, headPos.y - oldTailPos.y)
         val pd: Change =
