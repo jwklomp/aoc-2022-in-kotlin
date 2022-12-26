@@ -3,6 +3,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+data class TestClass(
+    var isFillable: Boolean = false,
+    val name: String = ""
+)
+
+
 internal class Grid2DTest {
 
     lateinit var testGrid: Grid2D<Int>
@@ -40,5 +46,13 @@ internal class Grid2DTest {
 
     @Test
     fun getAdjacent() {
+    }
+
+    @Test
+    fun testComplexObject() {
+        val list2D = (1..16).toList().map { TestClass() }.chunked(4)
+        val tgc = Grid2D(list2D)
+        tgc.getCell(1, 1).value.isFillable = true
+        println(tgc)
     }
 }

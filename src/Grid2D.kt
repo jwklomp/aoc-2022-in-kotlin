@@ -8,6 +8,8 @@ class Grid2D<T>(private val grid: List<List<T>>) {
         listOf(Pair(-1, -1), Pair(-1, 0), Pair(-1, 1), Pair(0, -1), Pair(0, 1), Pair(1, -1), Pair(1, 0), Pair(1, 1))
     private val adjacent: List<Pair<Int, Int>> = listOf(Pair(-1, 0), Pair(0, -1), Pair(0, 1), Pair(1, 0))
 
+    fun getNrOfRows(): Int = rowLength
+
     fun getCell(x: Int, y: Int): Cell<T> = Cell(value = grid[y][x], x = x, y = y)
 
     fun getAllCells(): List<Cell<T>> =
