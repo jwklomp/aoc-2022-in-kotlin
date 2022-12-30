@@ -1,6 +1,8 @@
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * Extension function to get all index positions of a given element in a collection
@@ -87,3 +89,21 @@ fun <T> Iterable<T>.takeWhileInclusive(
         result
     }
 }
+
+data class Point(val x: Int, val y: Int)
+
+fun manhattanDistance(first: Point, second: Point) = abs(first.x - second.x) + abs(first.y - second.y)
+
+data class Interval(val from: Int, val to: Int)
+
+fun mergeIntervals(intervals: List<Interval>) = intervals
+    .sortedWith(compareBy { it.from })
+    .fold(listOf<Interval>()) { sum, item ->
+        val last = sum.lastOrNull()
+        if (last != null && last.to >= item.from) {
+            val old = sum.dropLast(1)
+            old + Interval(from = last.from, to = max(last.to, item.to))
+        } else {
+            sum + item
+        }
+    }
