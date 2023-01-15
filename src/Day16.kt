@@ -1,71 +1,81 @@
-data class ValveSpec(val id: String, val rate: Int, val vertexIds: List<String>)
+data class Valve(val id: String, val rate: Int, val vertexIds: List<String>)
 
-data class Valve(val id: String, val rate: Int, val isOpen: Boolean = false)
-
-data class Graph(val nodes: List<Valve>, val edges: Map<Valve, List<Valve>>)
-
-data class State(val currentValve: Valve, var timeLeft: Int, val flowSum: Int, val openValves: MutableList<Valve>)
-
-fun makeValveSpecs(input: List<String>): List<ValveSpec> = input.map {
+fun makeValveSpecs(input: List<String>): Map<String, Valve> = input.map {
     val regex = """Valve ([\w\s]+) has flow rate=(\d+); tunnels? leads? to valves? ([A-Z, ]+)""".toRegex()
     val matchResult = regex.find(it)
     val (id, rate, vertexString) = matchResult!!.destructured
-    ValveSpec(id = id, rate = rate.toInt(), vertexIds = vertexString.split(", "))
-}
+    val valve = Valve(id = id, rate = rate.toInt(), vertexIds = vertexString.split(", "))
+    id to valve
+}.toMap()
 
-fun findPaths(
-    graph: Map<Valve, List<Valve>>,
-    current: Valve,
-    target: Valve,
-    path: MutableList<Valve>,
-    allPaths: MutableList<List<Valve>>,
-    visited: HashSet<Valve>
-) {
-    path.add(current)
-    visited.add(current)
-    if (current == target) {
-        allPaths.add(path.toList())
-    } else {
-        for (next in graph[current]!!) {
-            if (!visited.contains(next)) {
-                findPaths(graph, next, target, path, allPaths, visited)
-            }
+const val total_time = 7
+
+data class State(val current: Valve, val valves: List<Valve>, val time: Int)
+
+fun dfs(
+    currentValve: Valve,
+    currentTime: Int,
+    totalPressure: Int,
+    openValves: List<Valve>,
+    valveMap: Map<String, Valve>,
+    memoizedStates: MutableMap<State, Int>
+): Int {
+    // Time is up: return the result. Note that this will bubble up the value from N levels deep right to the top.
+    if (currentTime == total_time) {
+        return totalPressure
+    }
+
+    // If state has been computed before return it
+    val memoizationKey = State(currentValve, openValves, currentTime)
+    when (val state = memoizedStates[memoizationKey]) {
+        null -> {}
+        else -> return state
+    }
+
+    val newBest = when {
+        // open current valve rate > 0 and not already open. Stay in current and time increments
+        currentValve.rate > 0 && !openValves.contains(currentValve) -> dfs(
+            currentValve = currentValve,
+            currentTime = currentTime + 1,
+            totalPressure = totalPressure + openValves.sumOf { it.rate },
+            openValves = openValves + currentValve,
+            valveMap = valveMap,
+            memoizedStates = memoizedStates
+        )
+        // find connected Valve with the maximum pressure by recursively calling the function on each child Valve and returning the maximum
+        else -> currentValve.vertexIds.maxOf { child: String ->
+            val childFromMap = valveMap[child]!!
+            dfs(
+                currentValve = childFromMap,
+                currentTime = currentTime + 1,
+                totalPressure = totalPressure + openValves.sumOf { it.rate },
+                openValves = openValves,
+                valveMap = valveMap,
+                memoizedStates = memoizedStates
+            )
         }
     }
-    path.removeAt(path.size - 1)
-    visited.remove(current)
+    // add calculated state to the memoization Map
+    memoizedStates[memoizationKey] = newBest
+    return newBest
 }
-
 
 fun main() {
     fun part1(input: List<String>): Int {
-        val valveSpecs = makeValveSpecs(input)
-        println(valveSpecs)
+        val valves = makeValveSpecs(input)
 
-        // create the vertices (valves)
-        val vertices = valveSpecs.map { Valve(id = it.id, rate = it.rate) }
+        val entry = valves["AA"]!!
 
-        //  create edges as a Map
-        val allEdges = vertices.mapNotNull { fromVertex ->
-            val valve = valveSpecs.find { valveSpec -> valveSpec.id == fromVertex.id }
-            val edges = valve?.vertexIds?.mapNotNull { toVertexId ->
-                vertices.find { v -> v.id == toVertexId }
-            }.orEmpty()
-            fromVertex to edges
-        }.toMap()
+        val memoizedState = mutableMapOf<State, Int>()
 
-        val graph = Graph(vertices, allEdges)
-        println(graph)
-        val source = vertices.find { v -> v.id == "AA" }
-        val target = vertices.find { v -> v.id == "HH" }
-
-        val allPaths = mutableListOf<List<Valve>>()
-        findPaths(graph.edges, source!!, target!!, mutableListOf(), allPaths, HashSet())
-        println("result, there are ${allPaths.size} paths found. They are $allPaths")
-//        source?.let { graph.distinctPathsAllVisited(it) }
-//            ?.forEachIndexed { index, path -> println("nr $index path $path") }
-
-        return 1
+        return dfs(
+            currentValve = entry,
+            currentTime = 0,
+            totalPressure = 0,
+            openValves = listOf(),
+            valveMap = valves,
+            memoizedStates = memoizedState
+        )
     }
 
     fun part2(input: List<String>): Int {
@@ -74,7 +84,7 @@ fun main() {
         return 1
     }
 
-    val testInput = readInput("Day16_test")
+    val testInput = readInput("Day16_test_small")
     println(part1(testInput))
     //println(part2(testInput))
 
