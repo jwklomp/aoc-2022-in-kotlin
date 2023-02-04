@@ -8,7 +8,7 @@ fun makeValveSpecs(input: List<String>): Map<String, Valve> = input.map {
     id to valve
 }.toMap()
 
-const val total_time = 7
+const val total_time = 10
 
 data class State(val current: Valve, val valves: List<Valve>, val time: Int)
 
@@ -20,6 +20,7 @@ fun dfs(
     valveMap: Map<String, Valve>,
     memoizedStates: MutableMap<State, Int>
 ): Int {
+    println("Entering dfs. CurrentTime: $currentTime, currentValve: $currentValve")
     // Time is up: return the result. Note that this will bubble up the value from N levels deep right to the top.
     if (currentTime == total_time) {
         return totalPressure
@@ -32,6 +33,7 @@ fun dfs(
         else -> return state
     }
 
+    println("Going to calculate newBest")
     val newBest = when {
         // open current valve rate > 0 and not already open. Stay in current and time increments
         currentValve.rate > 0 && !openValves.contains(currentValve) -> dfs(
@@ -56,6 +58,7 @@ fun dfs(
         }
     }
     // add calculated state to the memoization Map
+    println("After recursive call newBest. Result: $newBest")
     memoizedStates[memoizationKey] = newBest
     return newBest
 }
@@ -66,6 +69,7 @@ fun main() {
 
         val entry = valves["AA"]!!
 
+        // state and score for given state
         val memoizedState = mutableMapOf<State, Int>()
 
         return dfs(
