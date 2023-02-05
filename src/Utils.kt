@@ -107,3 +107,13 @@ fun mergeIntervals(intervals: List<Interval>) = intervals
             sum + item
         }
     }
+
+inline fun <reified T> transpose(xs: List<List<T>>): List<List<T>> {
+    val cols = xs[0].size
+    val rows = xs.size
+    return List(cols) { j ->
+        List(rows) { i ->
+            xs[i][j]
+        }
+    }
+}
